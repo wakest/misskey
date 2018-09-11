@@ -25,3 +25,7 @@ export function unique<T>(xs: T[]): T[] {
 export function sum(xs: number[]): number {
 	return xs.reduce((a, b) => a + b, 0);
 }
+
+export function map<A, B>(f: (x: A) => B, xs: A[]): B[] {
+	return xs.map(x => f(x)); // f にはちょうど１つ引数を渡すため、x=>f(x)の代わりにfと書いてはいけない
+}
