@@ -71,6 +71,7 @@
 <script lang="ts">
 import define from '../../../common/define-widget';
 import * as uuid from 'uuid';
+import { mapWithIndex } from '../../../../../prelude/array';
 
 export default define({
 	name: 'server',
@@ -147,8 +148,8 @@ export default define({
 			const fediPeak = Math.max.apply(null, stats.map(x => x.all)) || 1;
 			const localPeak = Math.max.apply(null, stats.map(x => x.local)) || 1;
 
-			const fediPolylinePoints = stats.map((s, i) => [this.viewBoxX - ((stats.length - 1) - i), (1 - (s.all / fediPeak)) * this.viewBoxY]);
-			const localPolylinePoints = stats.map((s, i) => [this.viewBoxX - ((stats.length - 1) - i), (1 - (s.local / localPeak)) * this.viewBoxY]);
+			const fediPolylinePoints = mapWithIndex((s, i) => [this.viewBoxX - ((stats.length - 1) - i), (1 - (s.all / fediPeak)) * this.viewBoxY], stats);
+			const localPolylinePoints = mapWithIndex((s, i) => [this.viewBoxX - ((stats.length - 1) - i), (1 - (s.local / localPeak)) * this.viewBoxY], stats);
 			this.fediPolylinePoints = fediPolylinePoints.map(xy => `${xy[0]},${xy[1]}`).join(' ');
 			this.localPolylinePoints = localPolylinePoints.map(xy => `${xy[0]},${xy[1]}`).join(' ');
 

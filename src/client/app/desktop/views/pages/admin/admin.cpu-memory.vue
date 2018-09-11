@@ -54,6 +54,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import * as uuid from 'uuid';
+import { mapWithIndex } from '../../../../../prelude/array';
 
 export default Vue.extend({
 	props: ['connection'],
@@ -92,8 +93,8 @@ export default Vue.extend({
 			this.stats.push(stats);
 			if (this.stats.length > 200) this.stats.shift();
 
-			const cpuPolylinePoints = this.stats.map((s, i) => [this.viewBoxX - ((this.stats.length - 1) - i), (1 - s.cpu_usage) * this.viewBoxY]);
-			const memPolylinePoints = this.stats.map((s, i) => [this.viewBoxX - ((this.stats.length - 1) - i), (1 - (s.mem.used / s.mem.total)) * this.viewBoxY]);
+			const cpuPolylinePoints = mapWithIndex((s, i) => [this.viewBoxX - ((this.stats.length - 1) - i), (1 - s.cpu_usage) * this.viewBoxY], this.stats);
+			const memPolylinePoints = mapWithIndex((s, i) => [this.viewBoxX - ((this.stats.length - 1) - i), (1 - (s.mem.used / s.mem.total)) * this.viewBoxY], this.stats);
 			this.cpuPolylinePoints = cpuPolylinePoints.map(xy => `${xy[0]},${xy[1]}`).join(' ');
 			this.memPolylinePoints = memPolylinePoints.map(xy => `${xy[0]},${xy[1]}`).join(' ');
 

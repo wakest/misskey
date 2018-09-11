@@ -27,6 +27,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import { mapWithIndex } from '../../../../../prelude/array';
 
 function dragListen(fn) {
 	window.addEventListener('mousemove',  fn);
@@ -63,10 +64,10 @@ export default Vue.extend({
 			const peak = Math.max.apply(null, this.data.map(d => d.total));
 			if (peak != 0) {
 				const data = this.data.slice().reverse();
-				this.pointsNote = data.map((d, i) => `${(i * this.zoom) + this.pos},${(1 - (d.notes / peak)) * this.viewBoxY}`).join(' ');
-				this.pointsReply = data.map((d, i) => `${(i * this.zoom) + this.pos},${(1 - (d.replies / peak)) * this.viewBoxY}`).join(' ');
-				this.pointsRenote = data.map((d, i) => `${(i * this.zoom) + this.pos},${(1 - (d.renotes / peak)) * this.viewBoxY}`).join(' ');
-				this.pointsTotal = data.map((d, i) => `${(i * this.zoom) + this.pos},${(1 - (d.total / peak)) * this.viewBoxY}`).join(' ');
+				this.pointsNote = mapWithIndex((d, i) => `${(i * this.zoom) + this.pos},${(1 - (d.notes / peak)) * this.viewBoxY}`, data).join(' ');
+				this.pointsReply = mapWithIndex((d, i) => `${(i * this.zoom) + this.pos},${(1 - (d.replies / peak)) * this.viewBoxY}`, data).join(' ');
+				this.pointsRenote = mapWithIndex((d, i) => `${(i * this.zoom) + this.pos},${(1 - (d.renotes / peak)) * this.viewBoxY}`, data).join(' ');
+				this.pointsTotal = mapWithIndex((d, i) => `${(i * this.zoom) + this.pos},${(1 - (d.total / peak)) * this.viewBoxY}`, data).join(' ');
 			}
 		},
 		onMousedown(e) {

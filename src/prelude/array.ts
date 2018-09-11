@@ -30,6 +30,10 @@ export function map<A, B>(f: (x: A) => B, xs: A[]): B[] {
 	return xs.map(x => f(x)); // f にはちょうど１つ引数を渡すため、x=>f(x)の代わりにfと書いてはいけない
 }
 
+export function mapWithIndex<A, B>(f: (x: A, i: number) => B, xs: A[]): B[] {
+	return xs.map((x, i) => f(x, i)); // f にはちょうど２つ引数を渡すため、(x,i)=>f(x,i)の代わりにfと書いてはいけない
+}
+
 export function transpose<T>(xss: T[][]): T[][] {
 	if (xss.length === 0) return xss;
 	const n = xss.length;

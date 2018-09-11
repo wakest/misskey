@@ -32,6 +32,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import * as uuid from 'uuid';
+import { mapWithIndex } from '../../../../../prelude/array';
 
 export default Vue.extend({
 	props: {
@@ -72,10 +73,10 @@ export default Vue.extend({
 			const stats = this.src.slice().reverse();
 			const peak = Math.max.apply(null, stats) || 1;
 
-			const polylinePoints = stats.map((n, i) => [
+			const polylinePoints = mapWithIndex((n, i) => [
 				i * (this.viewBoxX / (stats.length - 1)),
 				(1 - (n / peak)) * this.viewBoxY
-			]);
+			], stats);
 
 			this.polylinePoints = polylinePoints.map(xy => `${xy[0]},${xy[1]}`).join(' ');
 
