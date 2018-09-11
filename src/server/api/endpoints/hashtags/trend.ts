@@ -1,5 +1,5 @@
 import Note from '../../../../models/note';
-import { erase } from '../../../../prelude/array';
+import { erase, zip3, transpose } from '../../../../prelude/array';
 import Meta from '../../../../models/meta';
 
 /*
@@ -109,7 +109,7 @@ export default () => new Promise(async (res, rej) => {
 	//#endregion
 
 	//#region 2(または3)で話題と判定されたタグそれぞれについて過去の投稿数グラフを取得する
-	const countPromises: Array<Promise<any[]>> = [];
+	const countPromises: Array<Promise<string[][]>> = [];
 
 	const range = 20;
 
@@ -117,29 +117,35 @@ export default () => new Promise(async (res, rej) => {
 	const interval = 1000 * 60 * 10;
 
 	for (let i = 0; i < range; i++) {
-		countPromises.push(Promise.all(hots.map(tag => Note.distinct('userId', {
+		countPromises.push(Promise.all(hots.map(tag => (Note.distinct as any)('userId', {
 			tagsLower: tag,
 			createdAt: {
 				$lt: new Date(Date.now() - (interval * i)),
 				$gt: new Date(Date.now() - (interval * (i + 1)))
 			}
-		}))));
+		}) as Promise<string[]>)));
 	}
 
+	// countsLogは時間ごとのタグごとのそのタグを投稿したユニークなユーザー(ID)の配列 だからstring[][][]
 	const countsLog = await Promise.all(countPromises);
 
-	const totalCounts: any = await Promise.all(hots.map(tag => Note.distinct('userId', {
+	const totalCounts = await Promise.all(hots.map(tag => (Note.distinct as any)('userId', {
 		tagsLower: tag,
 		createdAt: {
 			$gt: new Date(Date.now() - (interval * range))
 		}
-	})));
+	}) as Promise<string[]>));
 	//#endregion
 
-	const stats = hots.map((tag, i) => ({
-		tag,
-		chart: countsLog.map(counts => counts[i].length),
-		usersCount: totalCounts[i].length
+	const xs = zip3(
+		hots,
+		transpose(countsLog.map(counts => counts.map(count => count.length))),
+		totalCounts.map(count => count.length));
+
+	const stats = xs.map(x => ({
+		tag: x[0],
+		chart: x[1],
+		usersCount: x[2]
 	}));
 
 	res(stats);

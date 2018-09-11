@@ -29,3 +29,23 @@ export function sum(xs: number[]): number {
 export function map<A, B>(f: (x: A) => B, xs: A[]): B[] {
 	return xs.map(x => f(x)); // f にはちょうど１つ引数を渡すため、x=>f(x)の代わりにfと書いてはいけない
 }
+
+export function transpose<T>(xss: T[][]): T[][] {
+	if (xss.length === 0) return xss;
+	const n = xss.length;
+	const m = xss[0].length;
+	const yss = Array.from(Array(m), () => Array(n));
+	for (let i = 0; i < n; i++) {
+		for (let j = 0; j < m; j++) {
+			yss[j][i] = xss[i][j];
+		}
+	}
+	return yss;
+}
+
+export function zip3<A, B, C>(as: A[], bs: B[], cs: C[]): [A, B, C][] {
+	const result: [A, B, C][] = [];
+	const n = Math.min(as.length, bs.length, cs.length);
+	for (let i = 0; i < n; i++) result.push([as[i], bs[i], cs[i]]);
+	return result;
+}
