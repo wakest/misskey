@@ -24,7 +24,8 @@ import isQuote from '../../misc/is-quote';
 import { TextElementMention } from '../../mfm/parse/elements/mention';
 import { TextElementHashtag } from '../../mfm/parse/elements/hashtag';
 import { updateNoteStats } from '../update-chart';
-import { erase, unique } from '../../prelude/array';
+import { erase, unique, map } from '../../prelude/array';
+import { toLowerCase } from '../../prelude/string';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -327,7 +328,7 @@ async function insertNote(user: IUser, data: Option, tags: string[], mentionedUs
 		poll: data.poll,
 		cw: data.cw == null ? null : data.cw,
 		tags,
-		tagsLower: tags.map(tag => tag.toLowerCase()),
+		tagsLower: map(toLowerCase, tags),
 		userId: user._id,
 		viaMobile: data.viaMobile,
 		geo: data.geo || null,
